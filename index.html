@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Valentine Quiz 💖</title>
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #6a11cb, #2575fc);
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #333;
+    }
+
+    .card {
+        background: #fff;
+        width: 360px;
+        padding: 25px;
+        border-radius: 16px;
+        text-align: center;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        animation: fadeIn 0.5s ease;
+    }
+
+    h2 {
+        margin-bottom: 15px;
+    }
+
+    .score {
+        background: #eee;
+        padding: 8px;
+        border-radius: 10px;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    button {
+        width: 100%;
+        padding: 12px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    button:hover {
+        transform: scale(1.03);
+    }
+
+    .correct {
+        background: #4CAF50;
+        color: #fff;
+    }
+
+    .wrong {
+        background: #f1f1f1;
+    }
+
+    .yes {
+        background: #4CAF50;
+        color: white;
+    }
+
+    .no {
+        background: #e74c3c;
+        color: white;
+    }
+
+    .error {
+        background: #000;
+        color: red;
+        padding: 10px;
+        margin-top: 10px;
+        border-radius: 10px;
+        animation: shake 0.3s;
+    }
+
+    @keyframes shake {
+        0% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        50% { transform: translateX(5px); }
+        75% { transform: translateX(-5px); }
+        100% { transform: translateX(0); }
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: scale(0.9); }
+        to { opacity: 1; transform: scale(1); }
+    }
+</style>
+</head>
+<body>
+
+<div class="card" id="app"></div>
+
+<script>
+let score = 0;
+let step = 0;
+
+const app = document.getElementById("app");
+
+const screens = [
+    {
+        question: "Which month did We first meet? 💘",
+        answers: [
+            { text: "September", correct: true },
+            { text: "October", correct: false },
+            { text: "November", correct: false },
+            { text: "I don’t remember 😜", correct: false }
+        ],
+        angry: true
+    },
+    {
+        question: "Which flower did I get for your graduation? 🎁",
+        answers: [
+            { text: "Rose", correct: false },
+            { text: "Sunflower", correct: true },
+            { text: "Orchid", correct: false },
+            { text: "Never gifted", correct: false }
+        ],
+        angry: true
+    },
+    {
+        question: "Where did we click this photo? 📸",
+        image: "photo.jpg",
+        answers: [
+            { text: "Seri Kembangan", correct: false },
+            { text: "Damansara", correct: false },
+            { text: "Sentul", correct: true }
+        ]
+    },
+    {
+        question: "Will you be my Valentine? ❤️",
+        final: true
+    }
+];
+
+function render() {
+    app.innerHTML = "";
+
+    if (step < screens.length) {
+        const s = screens[step];
+
+        app.innerHTML += `<div class="score">Score: ${score}/4</div>`;
+        app.innerHTML += `<h2>${s.question}</h2>`;
+
+        if (s.image) {
+            app.innerHTML += `<img src="${s.image}" style="width:100%;border-radius:12px;margin-bottom:10px;">`;
+        }
+
+        if (s.final) {
+            app.innerHTML += `
+                <button class="yes" onclick="yes()">Yes ❤️</button>
+                <button class="no" onclick="no()">No</button>
+                <div id="error"></div>
+            `;
+            return;
+        }
+
+        s.answers.forEach(a => {
+            app.innerHTML += `<button class="wrong" onclick="answer(${a.correct}, ${s.angry || false})">${a.text}</button>`;
+        });
+
+    } else {
+        app.innerHTML = `
+            <h2>🎉 Yay! You’re My Valentine! 🎉</h2>
+            <p>Thank you for making my day special ❤️</p>
+        `;
+    }
+}
+
+function answer(correct, angry) {
+    if (correct) {
+        score++;
+        step++;
+        render();
+    } else {
+        if (angry) {
+            app.innerHTML += `<div class="error">😡 Kill you after the test</div>`;
+        }
+    }
+}
+
+function yes() {
+    score++;
+    step++;
+    render();
+}
+
+function no() {
+    document.getElementById("error").innerHTML =
+        "❌ Invalid choice.<br>System has detected you are already my Valentine.";
+}
+
+render();
+</script>
+
+</body>
+</html>
